@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main(){
+  Timer.periodic(const Duration(seconds:1), (timer) {
+    var now = new DateTime.now().toString();
+    print(now);
+  });
   runApp(MaterialApp(
     title: 'stoiC',
     home: HomeScreen(),
@@ -25,12 +30,12 @@ class HomeScreen extends StatelessWidget{
             heightFactor: 2.0,
           ),
           Center(
-              child: Text(date),
-              widthFactor: 2.0,
-              heightFactor: 2.0,
+            child: Text(date),
+            widthFactor: 2.0,
+            heightFactor: 2.0,
           ),
         ],
-      ),
-    );
+      )
+      );
   }
 }
