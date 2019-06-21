@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main(){
 
@@ -9,6 +10,47 @@ void main(){
 }
 
 
+//https://flutter.institute/creating-your-first-flutter-app/
+
+class ClockWidget extends StatefulWidget{
+  ClockWidget({Key key}) : super(key:key);
+
+  @override
+  _ClockWidgetState createState() => new _ClockWidgetState();
+}
+class _ClockWidgetState extends State<ClockWidget>{
+  Timer _timer;
+  DateTime _time;
+
+  @override
+  void initState() {
+    super.initState();
+    _time = new DateTime.now();
+
+    const duration = const Duration(seconds: 1);
+    _timer = new Timer.periodic(duration, _updateTime);
+  }
+
+  void _updateTime(Timer _){
+    setState(() {
+      _time = new DateTime.now();
+    });
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _timer.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Center(
+      child: new Text(_time.toString()),
+    );
+  }
+}
+
 class HomeScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -18,6 +60,12 @@ class HomeScreen extends StatelessWidget{
       ),
       body: Column(
         children: <Widget>[
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new ClockWidget(),
+            ),
+          ),
           Center(
             child: Text('a practical counter for practicing stoics'),
             widthFactor: 2.0,
