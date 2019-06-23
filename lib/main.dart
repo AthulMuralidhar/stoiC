@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
+//==============MAIN===================================================================================================================
 void main(){
 
   runApp(MaterialApp(
@@ -8,8 +10,7 @@ void main(){
     home: HomeScreen(),
   ));
 }
-
-
+//=============CLOCKWIDGET=================================================================================================================
 //https://flutter.institute/creating-your-first-flutter-app/
 
 class ClockWidget extends StatefulWidget{
@@ -50,7 +51,7 @@ class _ClockWidgetState extends State<ClockWidget>{
     );
   }
 }
-
+//=======HOMESCREEN==================================================================================================================
 class HomeScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -102,26 +103,150 @@ class HomeScreen extends StatelessWidget{
       );
   }
 }
+//====================OVERVIEWSCREEN======================================================================================================
+//https://flutter.dev/docs/development/ui/interactive
+class Internal{
+  String text;
+  bool opinions;
+  bool aims;
+  bool desires;
+  bool aversions;
+  Internal({
+    this.text,
+    this.aversions=false,
+    this.desires=false,
+    this.aims=false,
+    this.opinions=false,
+  });
+}
 
-class OverviewScreen extends StatelessWidget{
+class InternalsList extends StatefulWidget{
+  @override
+  _InternalsListState createState()=> _InternalsListState();
+}
+class _InternalsListState extends State<InternalsList>{
+  List<Internal> internals = [];
+  TextEditingController controller = new TextEditingController();
+
+  _toggleOpinion(Internal internal,bool isOpinionChecked){
+    setState(() {
+      internal.opinions = isOpinionChecked;
+    });
+  }
+  _toggleAim(Internal internal,bool isAimChecked){
+    setState(() {
+      internal.aims = isAimChecked;
+    });
+  }
+  _toggleDesire(Internal internal,bool isDesireChecked){
+    setState(() {
+      internal.desires= isDesireChecked;
+    });
+  }
+  _toggleAversion(Internal internal,bool isAversionChecked){
+    setState(() {
+      internal.aversions= isAversionChecked;
+    });
+  }
+
+  _addInternal(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('New Internal'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Add'),
+              onPressed: (){
+                setState(() {
+                  final internal= new Internal(text: controller.value.text);
+                  internals.add(internal);
+                  controller.clear();
+                  Navigator.of(context).pop();
+                });
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  _removeInternal(){
+    setState(() {
+      internals.removeLast();
+    });
+  }
+
+  Widget _buildItem(BuildContext context,int index){
+    final internal = internals[index];
+    return Row(
+        children: <Widget>[
+          Expanded(child: Text(internal.text)),
+          Checkbox(
+              value: internal.aversions,
+              onChanged: (bool isAversionChecked){
+                _toggleAversion(internal, isAversionChecked);
+              }
+          ),
+          Checkbox(
+              value: internal.desires,
+              onChanged: (bool isDesireChecked){
+                _toggleDesire(internal, isDesireChecked);
+              }
+          ),
+          Checkbox(
+              value: internal.opinions,
+              onChanged: (bool isOpinionChecked){
+                _toggleOpinion(internal, isOpinionChecked);
+              }
+          ),
+          Checkbox(
+              value: internal.aims,
+              onChanged: (bool isAimChecked){
+                _toggleAim(internal, isAimChecked);
+              }
+          ),
+        ],
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title:Text('Overview screen!'),
-    ),
-    body: Center(
-    child: Column(
-    children: <Widget>[
-      RaisedButton(
-        child: Text('Go back'),
-        onPressed: (){
-          Navigator.pop(context);
-          },
-        ),
-      ],
-    ),
-    ),
+      appBar: AppBar(title: Text('Overview Screen')),
+      body: ListView.builder(
+        itemBuilder: _buildItem,
+        itemCount: internals.length,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addInternal,
+        child: Icon(Icons.add),
+      ),
+      bottomSheet: RaisedButton(
+          child: Text('Delete'),
+          onPressed: _removeInternal,
+      ),
     );
   }
 }
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+class OverviewScreen extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return  InternalsList();
+  }
+}
+//================================EOF=============================================================================================
