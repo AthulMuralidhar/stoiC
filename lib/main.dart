@@ -7,9 +7,52 @@ void main(){
 
   runApp(MaterialApp(
     title: 'stoiC',
-    home: HomeScreen(),
+    home: SplashScreen(),
   ));
 }
+//=============SPLASHSCREEN================================================================================================================
+//https://fluttermaster.com/create-splash-screen-in-flutter/
+//https://github.com/petehouston/flutter-tips/blob/master/create-splash-screen/main.dart
+
+class SplashScreen extends StatefulWidget{
+
+  @override
+  _SplashScreenState createState() => new _SplashScreenState();
+}
+class _SplashScreenState extends State<SplashScreen>{
+
+  @override
+  void initState(){
+    super.initState();
+    loadData();
+  }
+
+  Future<Timer> loadData() async {
+    return new Timer(Duration(seconds: 5), onDoneLoading);
+  }
+  onDoneLoading() async {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>HomeScreen()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage('assets/launcher/stoic-launcher-404*404.png'),
+            fit: BoxFit.scaleDown,
+        )
+      ),
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      ),
+    );
+  }
+
+}
+
 //=============CLOCKWIDGET=================================================================================================================
 //https://flutter.institute/creating-your-first-flutter-app/
 
@@ -58,36 +101,47 @@ class HomeScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        backgroundColor: Colors.black,
       ),
       body: Column(
         children: <Widget>[
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: new ClockWidget(),
+          Card(
+          child:Container(
+            child:new ClockWidget(),
+            padding: const EdgeInsets.all(8.0),
+            width: 300,
+            height: 100,
+            alignment: Alignment.center,
             ),
           ),
-          Center(
-            child: Text('a practical counter for practicing stoics'),
-            widthFactor: 2.0,
-            heightFactor: 2.0,
+          Card(
+            child: Container(
+              child: Text('a practical counter for practicing stoics',
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+              padding: const EdgeInsets.all(8.0),
+              width: 300,
+              height: 100,
+              alignment: Alignment.center,
+            ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Text('''
-            In your daily travels, you might 
-            come across various situations that 
-            try to put your stoicabilities to 
-            the test. Here is a helper app to 
-            distinguish and keep track of the 
-            internals, the "real" things that
-            you actually have to care about 
-           '''
-           ),
-            widthFactor: 2.0,
-            heightFactor: 2.0,
-          ),
+          Card(
+            child:Container(
+              child: Text('In your daily travels, you might come across various situations that try to put your stoicabilities to the test. Here is a helper app to distinguish and keep track of the internals, the real things that you actually have to care about',
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 7,
+              ),
+              padding: const EdgeInsets.all(8.0),
+              width: 300,
+              height: 110,
+              alignment: Alignment.center,
+            ),
+        ),
+
           Center(
+            // TODO: Better design for the button
             child: RaisedButton(
                 onPressed: (){
                   Navigator.push(
@@ -103,7 +157,7 @@ class HomeScreen extends StatelessWidget{
       );
   }
 }
-//====================OVERVIEWSCREEN======================================================================================================
+//====================INTERNALSWIDGET======================================================================================================
 //https://flutter.dev/docs/development/ui/interactive
 class Internal{
   String text;
@@ -225,15 +279,20 @@ class _InternalsListState extends State<InternalsList>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Overview Screen')),
+      appBar: AppBar(
+          title: Text('Overview Screen'),
+          backgroundColor: Colors.black
+      ),
       body: ListView.builder(
         itemBuilder: _buildItem,
         itemCount: internals.length,
       ),
+      //TODO: Better buttons
       floatingActionButton: FloatingActionButton(
         onPressed: _addInternal,
         child: Icon(Icons.add),
       ),
+      //TODO: Better buttons
       bottomSheet: RaisedButton(
           child: Text('Delete'),
           onPressed: _removeInternal,
@@ -241,12 +300,12 @@ class _InternalsListState extends State<InternalsList>{
     );
   }
 }
-
-//--------------------------------------------------------------------------------------------------------------------------------------
+//================================OVERVIEWSCREEN==================================================================================
 class OverviewScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return  InternalsList();
   }
 }
+//TODO: Add functionality to store data locally and or over a server
 //================================EOF=============================================================================================
